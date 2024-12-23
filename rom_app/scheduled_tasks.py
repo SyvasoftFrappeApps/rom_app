@@ -190,12 +190,14 @@ def process_stock_entry(df_inventory, df_stock_entry):
         raw_material = df_stock_entry.iloc[i]['raw_material']
         ord_qty = df_stock_entry.iloc[i]['ord_qty']
         pur_item_amount = df_stock_entry.iloc[i]['amount']
-        # print(par_name, chi_name, branch, ' -- ', raw_material, ' -- ',
-        #       unit, ' -- ', price, ' -- ', ord_qty, '-- ', date)
         df_filter = df_inventory.loc[
             (df_inventory['branch'] == branch) &
             (df_inventory['raw_material'] == raw_material)]
-        print('!!!! process_stock_entry - df_filter  \n', df_filter)
+        #  print('!!!! process_stock_entry - df_filter  \n', df_filter)
+        if (len(df_filter) == 0):
+            print('item not found in inventory ===== ')
+            print(branch, ' -- ', raw_material, ' -- ', ord_qty, '-- ', pur_item_amount)
+            continue
         index_val = df_filter.index[0]
         quantity = df_filter.loc[index_val, 'quantity']
         price_x_qty = df_filter.loc[index_val, 'price_x_qty']
@@ -229,7 +231,12 @@ def process_indents(df_inventory, df_indnets):
         df_filter = df_inventory.loc[
             (df_inventory['branch'] == branch) &
             (df_inventory['raw_material'] == raw_material)]
-        print('!!!! process_indents - df_filter  \n', df_filter)
+        # print('!!!! process_indents - df_filter  \n', df_filter)
+
+        if (len(df_filter) == 0):
+            print('item not found in inventory ===== ')
+            print(branch, ' -- ', raw_material, ' -- ', issued_qty, '-- ', indent_item_amount)
+            continue
 
         index_val = df_filter.index[0]
         quantity = df_filter.loc[index_val, 'quantity']
@@ -265,8 +272,11 @@ def process_wastages(df_inventory, df_wastages):
                                  (df_inventory['branch'] == branch) &
                                  (df_inventory['raw_material'] == raw_material)
                                  ]
-        print('!!!! process_wastages- df_filter  \n', df_filter)
-
+        # print('!!!! process_wastages- df_filter  \n', df_filter)
+        if (len(df_filter) == 0):
+            print('item not found in inventory ===== ')
+            print(branch, ' -- ', raw_material, ' -- ', wastage_qty, '-- ', wast_item_amount)
+            continue
         index_val = df_filter.index[0]
         quantity = df_filter.loc[index_val, 'quantity']
         price_x_qty = df_filter.loc[index_val, 'price_x_qty']
