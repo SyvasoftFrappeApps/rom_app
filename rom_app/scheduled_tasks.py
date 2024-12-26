@@ -81,6 +81,7 @@ def inventory_summary(p_branch, p_date):
     log_text = f"inv_summm {p_branch} {p_date} {current_date_time}"
     print(log_text)
     frappe.log_error("inventory_summary", log_text)
+    frappe.log_error("changes", log_text)
     print(' ^^^^^ inventory_summary ^^^^^^^^^^  ########################## ')
     pd.set_option('display.max_columns', None)
     pd.set_option('display.expand_frame_repr', False)
@@ -196,8 +197,10 @@ def process_stock_entry(df_inventory, df_stock_entry):
         #  print('!!!! process_stock_entry - df_filter  \n', df_filter)
         if (len(df_filter) == 0):
             print('item not found in inventory ===== ')
-            print(branch, ' -- ', raw_material, ' -- ', ord_qty, '-- ', pur_item_amount)
+            del_items = branch, ' -- ', raw_material, ' -- ', ord_qty, '-- ', pur_item_amount
+            frappe.log_error("process_stock_entry", del_items)
             continue
+
         index_val = df_filter.index[0]
         quantity = df_filter.loc[index_val, 'quantity']
         price_x_qty = df_filter.loc[index_val, 'price_x_qty']
@@ -235,7 +238,8 @@ def process_indents(df_inventory, df_indnets):
 
         if (len(df_filter) == 0):
             print('item not found in inventory ===== ')
-            print(branch, ' -- ', raw_material, ' -- ', issued_qty, '-- ', indent_item_amount)
+            del_items = branch, ' -- ', raw_material, ' -- ', issued_qty, '-- ', indent_item_amount
+            frappe.log_error("process_indents", del_items)
             continue
 
         index_val = df_filter.index[0]
@@ -275,7 +279,8 @@ def process_wastages(df_inventory, df_wastages):
         # print('!!!! process_wastages- df_filter  \n', df_filter)
         if (len(df_filter) == 0):
             print('item not found in inventory ===== ')
-            print(branch, ' -- ', raw_material, ' -- ', wastage_qty, '-- ', wast_item_amount)
+            del_items = branch, ' -- ', raw_material, ' -- ', wastage_qty, '-- ', wast_item_amount
+            frappe.log_error("process_wastages", del_items)
             continue
         index_val = df_filter.index[0]
         quantity = df_filter.loc[index_val, 'quantity']
@@ -430,9 +435,19 @@ def get_inv_sum_for_specific_date(p_branch, specific_date):
     price_x_qty, closing_amount, closing_quantity
     FROM `tabInventory Summary`
     WHERE date = '{}' AND branch = '{}'
+    UNION
+    SELECT branch, '{}' as date, name as raw_material, unit, 0 as price, 0 as  quantity,
+       0 as price_x_qty, 0 as closing_amount,  0 as closing_quantity
+    FROM `tabRaw Material Only` rm
+    WHERE branch = '{}' AND  rm.name NOT IN
+    (
+    SELECT raw_material
+    FROM `tabInventory Summary`
+    WHERE date = '{}' AND branch = '{}'
+    )
     """
-    sql = sql.format(specific_date, p_branch)
-    # print(sql)
+    sql = sql.format(specific_date, p_branch, specific_date, p_branch, specific_date, p_branch)
+    print(sql)
     table = select_db_data(sql)
     df_inv_summary_cur_date = pd.DataFrame.from_records(table)
     return df_inv_summary_cur_date

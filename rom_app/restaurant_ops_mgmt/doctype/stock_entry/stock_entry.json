@@ -13,6 +13,7 @@
   "date",
   "ref_no",
   "stock_entry_template",
+  "previous_date",
   "column_break_xgcq",
   "bill_date",
   "arrival_time",
@@ -111,12 +112,17 @@
   {
    "fieldname": "column_break_xgcq",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "previous_date",
+   "fieldtype": "Date",
+   "label": "Previous Date"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-11 12:48:16.958454",
+ "modified": "2024-12-26 14:02:44.579428",
  "modified_by": "Administrator",
  "module": "Restaurant Ops Mgmt",
  "name": "Stock Entry",

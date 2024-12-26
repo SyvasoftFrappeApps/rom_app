@@ -21,8 +21,7 @@ frappe.ui.form.on("Reset Inventory Summary", {
 
 				console.log('branch ',branch);
 				console.log('start_date ',start_date);
-
-				// ------------------reset_inventory_summary---------------------------
+// ------------------reset_inventory_summary---------------------------
 				let api_url = "rom_app.scheduled_tasks.reset_inventory_summary"
 				frappe.call(
 					{
@@ -41,6 +40,24 @@ frappe.ui.form.on("Reset Inventory Summary", {
 						}
 					},);
 				// ------------------reset_inventory_summary---------------------------
+				
+				// let api_url = "rom_app.scheduled_tasks.inventory_summary"
+				// frappe.call(
+				// 	{
+				// 		method: api_url,
+				// 		args:
+				// 		{
+				// 			P_branch: branch,
+				// 			p_date: start_date
+				// 		},
+				// 		async:false,
+				// 		freeze:true,
+				// 		freeze_message: "Processing",
+				// 		callback: function(res)
+				// 		{
+				// 			console.log(res.message);
+				// 		}
+				// 	},);
 
 		});
 

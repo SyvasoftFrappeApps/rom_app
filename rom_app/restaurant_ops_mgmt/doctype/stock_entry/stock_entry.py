@@ -1,10 +1,11 @@
 import frappe
-from datetime import datetime
+from datetime import datetime, timedelta
 from frappe.model.document import Document
 import rom_app.scheduled_tasks
 from frappe.utils import now
 from frappe.utils import date_diff
 from ... import utils
+from frappe.utils import add_to_date, today, date_diff
 
 
 class StockEntry(Document):
@@ -51,6 +52,14 @@ class StockEntry(Document):
             # # print(" se - price  ", item.unit_price)
             doc.price = item.unit_price
             doc.save()
+        doc_date = self.date    
+        my_original_doc = self.get_doc_before_save()    
+        if my_original_doc is not None:
+            intial_date =  my_original_doc.date
+            print('my_original_doc.date ', intial_date)
+            self.previous_date = intial_date
+        else:
+            self.previous_date = doc_date
 
     def on_update(self):
         print(' >> on_update << ')
@@ -59,8 +68,27 @@ class StockEntry(Document):
         user_email = frappe.session.user
         branch = utils.find_user_branch_based_on_email(user_email)
         doc_date = self.date
+        previous_date =  self.previous_date
+        date_format = "%Y-%m-%d"
+        print('1== doc_date.---> ', doc_date, type(doc_date))
+        print('1== previous_date --->', previous_date, type(previous_date))
+        if isinstance(doc_date, str):
+            print("33")
+            doc_date = datetime.strptime(doc_date, date_format).date()
+        if isinstance(previous_date, str):
+            print("44")
+            previous_date = datetime.strptime(previous_date, date_format).date()
+        
+        print('2== doc_date.---> ', doc_date, type(doc_date))
+        print('2== previous_date --->', previous_date, type(previous_date))
+        
+        if doc_date < previous_date:
+            print("previous_date < proper_doc_date TRUE")
+            doc_date = previous_date
+            doc_date = doc_date.strftime("%Y-%m-%d")  # Format: YYYY-MM-DD
+
         # doc_date = doc_date.strftime("%Y-%m-%d")
-        print("on_update - branch: docdate", branch, doc_date)
+        print("****   on_update - branch: docdate", user_email, branch, doc_date)
         # rom_app.scheduled_tasks.inventory_summary(branch, doc_date)
         frappe.enqueue(
             rom_app.scheduled_tasks.inventory_summary,
@@ -73,7 +101,7 @@ class StockEntry(Document):
         # print("on_update - branch:", branch)
         doc_date = self.date
         doc_date = doc_date.strftime("%Y-%m-%d")
-        print("on_update - branch: docdate", branch, doc_date)
+        print("after_delete - branch: docdate", branch, doc_date)
         print(' >> after_delete << <<<<<<<<<<<<<<<<<<< ')
         # rom_app.scheduled_tasks.inventory_summary(branch, doc_date)
         frappe.enqueue(
