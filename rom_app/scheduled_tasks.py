@@ -33,7 +33,7 @@ def reset_inventory_summary(branch, start_date):
     frappe.enqueue(
         inventory_summary,
         queue='long',
-        p_branch=branch, p_date=formatted_date)
+        p_branch=branch, p_date=formatted_date, timeout=15600)
     return log_text
 
 
