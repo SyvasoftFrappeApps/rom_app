@@ -11,6 +11,7 @@
   "column_break_ydrh",
   "department",
   "date",
+  "previous_date",
   "column_break_keti",
   "receive_date",
   "total_price",
@@ -94,12 +95,18 @@
   {
    "fieldname": "column_break_keti",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "previous_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Previous Date"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-11 12:45:06.628021",
+ "modified": "2024-12-28 13:37:41.025971",
  "modified_by": "Administrator",
  "module": "Restaurant Ops Mgmt",
  "name": "Chef Indent By Dept",

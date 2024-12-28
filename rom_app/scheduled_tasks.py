@@ -436,7 +436,7 @@ def get_inv_sum_for_specific_date(p_branch, specific_date):
     FROM `tabInventory Summary`
     WHERE date = '{}' AND branch = '{}'
     UNION
-    SELECT branch, '{}' as date, name as raw_material, unit, 0 as price, 0 as  quantity,
+    SELECT branch, '{}' as date, name as raw_material, unit, price, 0 as  quantity,
        0 as price_x_qty, 0 as closing_amount,  0 as closing_quantity
     FROM `tabRaw Material Only` rm
     WHERE branch = '{}' AND  rm.name NOT IN

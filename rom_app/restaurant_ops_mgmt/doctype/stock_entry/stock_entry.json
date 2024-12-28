@@ -116,13 +116,14 @@
   {
    "fieldname": "previous_date",
    "fieldtype": "Date",
+   "hidden": 1,
    "label": "Previous Date"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 14:02:44.579428",
+ "modified": "2024-12-28 13:37:03.563857",
  "modified_by": "Administrator",
  "module": "Restaurant Ops Mgmt",
  "name": "Stock Entry",

@@ -37,6 +37,13 @@ class ChefIndentByDept(Document):
             print('issu_qty_entry_minus ', issu_qty_entry_minus)
             item.issued_qty = issu_qty_entry_minus
             print('item.issued_qty ', item.issued_qty)
+        doc_date = self.date
+        my_original_doc = self.get_doc_before_save()
+        if my_original_doc is not None:
+            intial_date = my_original_doc.date
+            self.previous_date = intial_date
+        else:
+            self.previous_date = doc_date
 
     def get_the_record_count(self, branch, user_name, date_obj):
         rec_count = frappe.db.count('Chef Indent By Dept', filters={
@@ -108,11 +115,20 @@ class ChefIndentByDept(Document):
         print("on_update - branch:", branch)
         doc_date = self.date
         # rom_app.scheduled_tasks.inventory_summary(branch, doc_date)
+        previous_date = self.previous_date
+        date_format = "%Y-%m-%d"
+        if isinstance(doc_date, str):
+            doc_date = datetime.strptime(doc_date, date_format).date()
+        if isinstance(previous_date, str):
+            previous_date = datetime.strptime(previous_date, date_format).date()
+        if doc_date > previous_date:
+            doc_date = previous_date
+        doc_date = doc_date.strftime("%Y-%m-%d")
         frappe.enqueue(
             rom_app.scheduled_tasks.inventory_summary,
             queue='long',
             p_branch=branch, p_date=doc_date)
-
+        
     def after_delete(self):
         user_email = frappe.session.user
         branch = utils.find_user_branch_based_on_email(user_email)

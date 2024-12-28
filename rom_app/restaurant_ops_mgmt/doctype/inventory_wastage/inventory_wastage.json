@@ -7,6 +7,7 @@
  "field_order": [
   "branch",
   "user_name",
+  "previous_date",
   "column_break_uiuf",
   "date",
   "remarks",
@@ -72,12 +73,18 @@
    "fieldname": "remarks",
    "fieldtype": "Data",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "previous_date",
+   "fieldtype": "Date",
+   "hidden": 1,
+   "label": "Previous Date"
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-11-16 19:12:37.954180",
+ "modified": "2024-12-28 13:38:16.904998",
  "modified_by": "Administrator",
  "module": "Restaurant Ops Mgmt",
  "name": "Inventory Wastage",
