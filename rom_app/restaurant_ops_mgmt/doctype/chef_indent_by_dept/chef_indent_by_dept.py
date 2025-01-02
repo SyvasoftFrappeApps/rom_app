@@ -22,6 +22,14 @@ class ChefIndentByDept(Document):
         print(self)
         print('^^^^^^^^^^^^^^^^^^^')
         print(self.raw_materials)
+        doc_date = self.date
+        my_original_doc = self.get_doc_before_save()
+        if my_original_doc is not None:
+            intial_date = my_original_doc.date
+            self.previous_date = intial_date
+        else:
+            self.previous_date = doc_date
+            
         for item in self.raw_materials:
             print('------------------------------ - ')
             if (item.issu_qty_entry is None):
@@ -37,13 +45,7 @@ class ChefIndentByDept(Document):
             print('issu_qty_entry_minus ', issu_qty_entry_minus)
             item.issued_qty = issu_qty_entry_minus
             print('item.issued_qty ', item.issued_qty)
-        doc_date = self.date
-        my_original_doc = self.get_doc_before_save()
-        if my_original_doc is not None:
-            intial_date = my_original_doc.date
-            self.previous_date = intial_date
-        else:
-            self.previous_date = doc_date
+        
 
     def get_the_record_count(self, branch, user_name, date_obj):
         rec_count = frappe.db.count('Chef Indent By Dept', filters={
